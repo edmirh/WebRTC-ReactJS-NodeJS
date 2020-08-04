@@ -5,7 +5,7 @@ import Client from './Client';
 
 class Routing extends Component {
   state = {
-    step: 3
+    step: 1
   }
 
   nextStep = () => {
