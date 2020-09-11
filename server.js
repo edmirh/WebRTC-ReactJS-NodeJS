@@ -14,7 +14,7 @@ const client = require('twilio')(accountSid, authToken);
 const app = express();
 const port = 5000;
 const server = http.createServer(app);
-const io = socket(server);
+const io = require('socket.io')(server);
 
 app.use(cors());
 
@@ -52,13 +52,17 @@ app.get('/client', function(req, res) {
   console.log("Radi!");
 })
 
-io.on('connection', socket => {
+io.sockets.on("error", e => console.log(e));
+io.sockets.on("connection", socket => {
+  console.log("Socket id: ", socket.id);
   if(!users[socket.id]) {
     users[socket.id] = socket.id;
+    console.log("Users from node: ", users);
   }
+  
   socket.emit("yourID", socket.id);
   io.sockets.emit("allUsers", users);
-  console.log("yourID radi");
+
   socket.on('disconnect', () => {
     delete users[socket.id];
   })
