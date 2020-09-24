@@ -6,8 +6,12 @@ import Login from './Login';
 
 class Routing extends Component {
   state = {
+<<<<<<< HEAD
     step: 1,
     email: ''
+=======
+    step: 1
+>>>>>>> ce700eb5b7c35cae10dec40d09e4e78420f8ac0b
   }
 
   nextStep = () => {
