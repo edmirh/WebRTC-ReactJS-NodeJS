@@ -1,16 +1,17 @@
-version: '2.0'
+version: '3'
 
 services:
-
-  react-frontend:
-    container_name: react-frontend
-    build:
-      context: .
-      dockerfile: Dockerfile
+  backend:
+    build: ./server
     volumes:
-      - '.:/app'
-      - '/app/node_modules'
+      - ./server:/backend
     ports:
-      - '3000:5000'
-    environment:
-      - NODE_ENV=development
+      - 5000:5000
+
+  react:
+    build: ./react
+    volumes:
+      - ./react:/frontend
+    ports:
+      - 8080:80
+      - 443:443

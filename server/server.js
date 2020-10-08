@@ -24,14 +24,6 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser(process.env.COOKIE_SECRET))
 app.use(pino);
 
-app.use(express.static(path.join(__dirname, '../build')));
-
-
-app.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-	console.log("Radii!");
-});
-
 app.post('/api/messages', (req, res) => {
   res.header('Content-Type', 'application/json');
   client.messages
