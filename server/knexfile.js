@@ -3,10 +3,10 @@ require('dotenv').config();
 module.exports = {
     development: {
         client: 'pg',
-        connection: 'postgres://postgres:2016@localhost/visualsupport'
+        connection: 'postgres://postgres:2016@postgres_db/visualsupport'
     },
     production: {
         client: 'pg',
-        connection: process.env.DATABASE_URL + '?ssl=true'
+        connection: 'postgres://postgres:2016@postgres_db/visualsupport'
     }
 };
