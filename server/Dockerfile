@@ -1,12 +1,12 @@
-FROM node:14.11-slim
+FROM node:12.9-alpine
 
 WORKDIR /backend
 
 ENV PATH /backend/node_modules/.bin:$PATH
-COPY . /backend
 
-RUN npm install
+ADD package*.json ./
+RUN npm install --silent
+
+ADD . .
+
 CMD ["npm", "start"]
-
-
-

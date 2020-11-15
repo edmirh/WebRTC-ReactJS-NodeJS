@@ -2,7 +2,6 @@ const http = require('http');
 const cors = require('cors');
 const express = require('express');
 const path = require('path');
-const fs = require('fs');
 const socket = require('socket.io');
 require('dotenv').config();
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
@@ -10,7 +9,7 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 const server = http.createServer(app);
 const io = require('socket.io')(server, {serveClient: false});
 const pino = require('express-pino-logger')();
@@ -23,6 +22,13 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser(process.env.COOKIE_SECRET))
 app.use(pino);
+
+app.use(express.static(path.join(__dirname, 'build')));
+
+
+app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 app.post('/api/messages', (req, res) => {
   res.header('Content-Type', 'application/json');
@@ -53,7 +59,7 @@ app.use(function(err, req, res, next) {
   })
 })
 
-const users = {}
+let users = {}
 
 io.sockets.on("error", e => console.log(e));
 io.sockets.on("connection", socket => {
@@ -74,14 +80,16 @@ io.sockets.on("connection", socket => {
   })
 
   socket.on("callUser", (data) => {
-    io.to(data.userToCall).emit('hey', { signal: data.signalData, from: data.from, name: data.name });
+    io.to(data.userToCall).emit('hey', { signal: data.signalData, from: data.from , name: data.name });
+    console.log("Calluser radi, caller user: ", data.name);
   })
 
   socket.on("acceptCall", (data) => {
     io.to(data.to).emit('callAccepted', data.signal);
+    console.log("Accept call radi");
   })
 })
 
 
-server.listen(process.env.PORT || port);
+server.listen(port);
 console.log('Listening on https://34.67.57.171:',port);

@@ -1,23 +1,24 @@
-FROM node:14.11-slim as builder
+FROM node:12.9-alpine as builder
 
 WORKDIR /frontend
 
 ENV PATH /frontend/node_modules/.bin:$PATH
-COPY . /frontend
-
-RUN npm install && npm run build
+ADD package*.json ./
+RUN npm install --silent
+ADD . .
+RUN npm run build
 
 #----------------------
 # Production NGINX
 #----------------------
-FROM nginx:1.16.0-alpine
+FROM nginx:1.19-alpine
 
 COPY --from=builder /frontend/build /usr/share/nginx/html
 
 RUN rm /etc/nginx/conf.d/default.conf && mkdir /etc/nginx/ssl
 
 COPY nginx/ssl/ /etc/nginx/ssl/
-COPY nginx/nginx.conf /etc/nginx/conf.d/
+COPY nginx/default.conf /etc/nginx/conf.d/
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
