@@ -109,25 +109,23 @@ router.post('/login', validateUserLogin, async (req, res, next) => {
     }
 })
 
-router.post('/users', (req, res, next) => {
+router.post('/users', async (req, res, next) => {
     const { email } = req.body
-    User.getOneByEmail(email)
-    .then(user => {
-        if(user) {
-            const name = user.name
-            res.json({
-                name,
-                success: true
-            })
-        }
-        else {
-            res.json({
-                success: false,
-                message: 'User do not exist'
-            })
-            next(new Error('Invalid login'));
-        }
-    })
+    const user = await User.getOneByEmail(email)
+    if(user) {
+        const name = user.name
+        res.json({
+            name,
+            success: true
+        })
+    }
+    else {
+        res.json({
+            success: false,
+            message: 'User do not exist'
+        })
+        next(new Error('Invalid login'));
+    }
 })
 
 module.exports = router;
